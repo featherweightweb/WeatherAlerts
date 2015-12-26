@@ -125,11 +125,10 @@ class SameCodes(object):
                 #stripping it out
                 location['state'] = state.strip()
                 same[code] = location
-            finally:
+            except:
                 pass
-        cache = open(self._same_cache_file, 'wb')
-        pickle.dump(same, cache)
-        cache.close()
+        with open(self._same_cache_file, 'wb') as cache:
+            pickle.dump(same, cache)
         return same
 
     def _cached_same_codes(self):
@@ -140,10 +139,9 @@ class SameCodes(object):
             file_ts = datetime.fromtimestamp(os.stat(cache_file).st_mtime)
             if file_ts > maxage:
                 try:
-                    cache = open(cache_file, 'rb')
-                    self._samecodes = pickle.load(cache)
-                    cache.close()
-                    return True
-                finally:
+                    with open(cache_file, 'rb') as cache:
+                        self._samecodes = pickle.load(cache)
+                    return
+                except:
                     pass
         self.reload()
